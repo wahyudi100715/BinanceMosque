@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>BINANCE MOSQUE – Web3 Crowdfunding</title>
+<meta name="description" content="Fund the construction of Binance Mosque – a sacred space powered by blockchain transparency on BNB Chain."/>
+<meta name="keywords" content="Binance Mosque, Web3 Crowdfunding, BNB Chain, Islamic Architecture, Blockchain Donation"/>
+<meta property="og:title" content="BINANCE MOSQUE – A Sacred Space Powered by Blockchain"/>
+<meta property="og:description" content="Fund the Future. Track Every Penny on Chain."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;900&family=Lato:wght@300;400;700&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
+<style>
+:root {
+  --gold: #F0B90B;
+  --gold2: #e8a800;
+  --teal: #1de9b6;
+  --dark: #0a0a0f;
+  --dark2: #10101a;
+  --dark3: #181828;
+  --card: #13131f;
+  --border: rgba(240,185,11,0.2);
+  --text: #e8e8f0;
+  --muted: #8888aa;
+  --success: #1de9b6;
+  --font-display: 'Cinzel', serif;
+  --font-body: 'Lato', sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--dark);color:var(--text);font-family:var(--font-body);overflow-x:hidden;min-height:100vh;}
+
+/* GEOMETRIC PATTERN BG */
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:
+    repeating-linear-gradient(60deg,rgba(240,185,11,0.03) 0,rgba(240,185,11,0.03) 1px,transparent 1px,transparent 40px),
+    repeating-linear-gradient(-60deg,rgba(240,185,11,0.03) 0,rgba(240,185,11,0.03) 1px,transparent 1px,transparent 40px),
+    repeating-linear-gradient(0deg,rgba(240,185,11,0.02) 0,rgba(240,185,11,0.02) 1px,transparent 1px,transparent 40px);
+  pointer-events:none;z-index:0;
+}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-track{background:var(--dark2);}
+::-webkit-scrollbar-thumb{background:var(--gold);border-radius:2px;}
+
+/* NAV */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:1rem 2rem;
+  background:rgba(10,10,15,0.85);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+}
+.nav-logo{display:flex;align-items:center;gap:10px;font-family:var(--font-display);font-size:1.1rem;color:var(--gold);font-weight:600;letter-spacing:2px;}
+.nav-logo svg{width:32px;height:32px;}
+.nav-links{display:flex;gap:2rem;list-style:none;}
+.nav-links a{color:var(--muted);text-decoration:none;font-size:0.85rem;letter-spacing:1px;text-transform:uppercase;transition:color 0.2s;}
+.nav-links a:hover{color:var(--gold);}
+.nav-right{display:flex;align-items:center;gap:1rem;}
+.btn-connect{
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
+  color:#000;border:none;padding:0.55rem 1.4rem;
+  border-radius:4px;font-weight:700;font-size:0.85rem;
+  cursor:pointer;letter-spacing:1px;transition:all 0.2s;
+  font-family:var(--font-body);
+}
+.btn-connect:hover{transform:translateY(-1px);box-shadow:0 4px 20px rgba(240,185,11,0.4);}
+.wallet-info{display:none;align-items:center;gap:8px;background:rgba(240,185,11,0.1);border:1px solid var(--border);padding:0.4rem 1rem;border-radius:4px;font-size:0.8rem;color:var(--gold);}
+.wallet-dot{width:8px;height:8px;background:var(--success);border-radius:50%;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
+
+/* HERO */
+.hero{
+  position:relative;min-height:100vh;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:6rem 2rem 4rem;overflow:hidden;
+}
+.hero-bg{
+  position:absolute;inset:0;z-index:0;
+  background:radial-gradient(ellipse 80% 60% at 50% 100%, rgba(240,185,11,0.08) 0%, transparent 70%),
+             radial-gradient(ellipse 40% 40% at 50% 50%, rgba(29,233,182,0.04) 0%, transparent 60%);
+}
+.mosque-illustration{
+  position:relative;z-index:1;
+  width:min(600px,90vw);margin-bottom:2rem;
+  filter:drop-shadow(0 0 60px rgba(240,185,11,0.3));
+  animation:float 6s ease-in-out infinite;
+}
+@keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-12px);}}
+.hero-badge{
+  position:relative;z-index:1;
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(240,185,11,0.1);border:1px solid var(--border);
+  padding:0.4rem 1.2rem;border-radius:20px;
+  font-size:0.75rem;letter-spacing:2px;color:var(--gold);
+  text-transform:uppercase;margin-bottom:1.5rem;
+}
+.hero-badge::before{content:'';width:6px;height:6px;background:var(--gold);border-radius:50%;}
+.hero h1{
+  position:relative;z-index:1;
+  font-family:var(--font-display);
+  font-size:clamp(2rem,6vw,4rem);
+  font-weight:900;letter-spacing:3px;
+  background:linear-gradient(135deg,#fff 0%,var(--gold) 50%,#fff 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;line-height:1.1;margin-bottom:1rem;
+}
+.hero h2{
+  position:relative;z-index:1;
+  font-family:var(--font-display);font-size:clamp(0.9rem,2vw,1.1rem);
+  font-weight:400;color:var(--teal);letter-spacing:3px;margin-bottom:1.5rem;
+}
+.hero p{
+  position:relative;z-index:1;
+  max-width:560px;color:var(--muted);line-height:1.8;
+  font-size:1rem;margin-bottom:2.5rem;
+}
+.hero-btns{position:relative;z-index:1;display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;}
+.btn-primary{
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
+  color:#000;border:none;padding:0.85rem 2.5rem;
+  border-radius:4px;font-weight:700;font-size:1rem;
+  cursor:pointer;letter-spacing:1px;transition:all 0.25s;
+  font-family:var(--font-body);
+}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(240,185,11,0.5);}
+.btn-outline{
+  background:transparent;color:var(--gold);
+  border:1px solid var(--gold);padding:0.85rem 2.5rem;
+  border-radius:4px;font-weight:600;font-size:1rem;
+  cursor:pointer;letter-spacing:1px;transition:all 0.25s;
+  font-family:var(--font-body);text-decoration:none;display:inline-flex;align-items:center;
+}
+.btn-outline:hover{background:rgba(240,185,11,0.1);transform:translateY(-2px);}
+
+/* STATS STRIP */
+.stats-strip{
+  position:relative;z-index:1;
+  display:grid;grid-template-columns:repeat(3,1fr);gap:1px;
+  background:var(--border);border:1px solid var(--border);
+  border-radius:8px;max-width:700px;width:100%;margin:3rem auto 0;
+}
+.stat-item{background:var(--card);padding:1.5rem;text-align:center;}
+.stat-item:first-child{border-radius:8px 0 0 8px;}
+.stat-item:last-child{border-radius:0 8px 8px 0;}
+.stat-val{font-family:var(--font-display);font-size:1.8rem;color:var(--gold);font-weight:600;}
+.stat-lbl{font-size:0.75rem;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-top:4px;}
+
+/* SECTION */
+section{position:relative;z-index:1;padding:5rem 2rem;}
+.container{max-width:1100px;margin:0 auto;}
+.section-label{font-size:0.75rem;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-bottom:0.5rem;}
+.section-title{font-family:var(--font-display);font-size:clamp(1.6rem,3vw,2.4rem);font-weight:600;margin-bottom:1rem;color:#fff;}
+.section-sub{color:var(--muted);max-width:500px;line-height:1.8;}
+.divider{width:60px;height:2px;background:linear-gradient(90deg,var(--gold),transparent);margin:1.5rem 0;}
+
+/* DONATE SECTION */
+.donate-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-top:3rem;}
+@media(max-width:768px){.donate-grid{grid-template-columns:1fr;}}
+.donate-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:12px;padding:2rem;
+}
+.progress-wrap{margin:1.5rem 0;}
+.progress-label{display:flex;justify-content:space-between;margin-bottom:8px;font-size:0.85rem;}
+.progress-bar{height:10px;background:rgba(255,255,255,0.06);border-radius:5px;overflow:hidden;}
+.progress-fill{
+  height:100%;border-radius:5px;
+  background:linear-gradient(90deg,var(--gold),var(--teal));
+  transition:width 1s ease;position:relative;
+}
+.progress-fill::after{
+  content:'';position:absolute;top:0;right:0;bottom:0;left:0;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.2),transparent);
+  animation:shimmer 2s infinite;
+}
+@keyframes shimmer{0%{transform:translateX(-100%);}100%{transform:translateX(100%);}}
+.amount-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:1rem 0;}
+.amount-btn{
+  background:rgba(240,185,11,0.08);border:1px solid var(--border);
+  color:var(--gold);padding:0.5rem;border-radius:6px;
+  cursor:pointer;font-size:0.85rem;text-align:center;
+  transition:all 0.2s;font-family:var(--font-body);
+}
+.amount-btn:hover,.amount-btn.active{background:var(--gold);color:#000;font-weight:700;}
+.input-group{margin:1rem 0;}
+.input-group label{display:block;font-size:0.8rem;color:var(--muted);margin-bottom:6px;letter-spacing:1px;}
+.input-row{display:flex;gap:8px;}
+.input-row input{
+  flex:1;background:rgba(255,255,255,0.04);
+  border:1px solid var(--border);color:#fff;
+  padding:0.75rem 1rem;border-radius:6px;
+  font-size:1rem;outline:none;transition:border 0.2s;
+  font-family:var(--font-body);
+}
+.input-row input:focus{border-color:var(--gold);}
+.input-badge{
+  background:rgba(240,185,11,0.15);border:1px solid var(--border);
+  padding:0.75rem 1rem;border-radius:6px;color:var(--gold);
+  font-weight:700;font-size:0.9rem;white-space:nowrap;
+}
+.btn-donate{
+  width:100%;background:linear-gradient(135deg,var(--gold),var(--gold2));
+  color:#000;border:none;padding:1rem;border-radius:6px;
+  font-weight:700;font-size:1rem;cursor:pointer;
+  letter-spacing:1px;transition:all 0.25s;margin-top:1rem;
+  font-family:var(--font-body);
+}
+.btn-donate:hover{transform:translateY(-2px);box-shadow:0 6px 25px rgba(240,185,11,0.4);}
+.btn-donate:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
+.tx-result{
+  display:none;margin-top:1rem;padding:1rem;
+  background:rgba(29,233,182,0.08);border:1px solid rgba(29,233,182,0.3);
+  border-radius:6px;font-size:0.8rem;
+}
+.tx-result a{color:var(--teal);word-break:break-all;}
+
+/* MILESTONES */
+.milestone-list{margin-top:2rem;display:flex;flex-direction:column;gap:12px;}
+.milestone-item{
+  display:flex;align-items:center;gap:1rem;
+  background:var(--card);border:1px solid var(--border);
+  padding:1rem 1.5rem;border-radius:8px;transition:all 0.2s;
+}
+.milestone-item:hover{border-color:var(--gold);}
+.milestone-item.done{border-color:rgba(29,233,182,0.4);}
+.m-icon{
+  width:40px;height:40px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(240,185,11,0.1);border:1px solid var(--border);
+  font-size:1.2rem;flex-shrink:0;
+}
+.milestone-item.done .m-icon{background:rgba(29,233,182,0.1);border-color:rgba(29,233,182,0.3);}
+.m-info{flex:1;}
+.m-title{font-weight:600;font-size:0.95rem;margin-bottom:2px;}
+.m-pct{font-size:0.75rem;color:var(--muted);}
+.m-status{font-size:0.75rem;padding:3px 10px;border-radius:10px;white-space:nowrap;}
+.m-status.done{background:rgba(29,233,182,0.15);color:var(--teal);}
+.m-status.pending{background:rgba(240,185,11,0.1);color:var(--gold);}
+
+/* LEDGER */
+.ledger-section{background:var(--dark2);}
+.ledger-table{width:100%;border-collapse:collapse;margin-top:1.5rem;font-size:0.85rem;}
+.ledger-table th{
+  text-align:left;padding:0.75rem 1rem;
+  color:var(--gold);font-size:0.75rem;letter-spacing:1px;text-transform:uppercase;
+  border-bottom:1px solid var(--border);
+}
+.ledger-table td{
+  padding:0.75rem 1rem;border-bottom:1px solid rgba(255,255,255,0.04);
+  color:var(--text);
+}
+.ledger-table tr:hover td{background:rgba(240,185,11,0.03);}
+.ledger-table a{color:var(--teal);text-decoration:none;}
+.ledger-table a:hover{text-decoration:underline;}
+.badge-in{background:rgba(29,233,182,0.15);color:var(--teal);padding:2px 8px;border-radius:10px;font-size:0.7rem;}
+.badge-out{background:rgba(240,185,11,0.15);color:var(--gold);padding:2px 8px;border-radius:10px;font-size:0.7rem;}
+.ledger-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:8px;}
+.verify-btn{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(29,233,182,0.08);border:1px solid rgba(29,233,182,0.3);
+  color:var(--teal);padding:0.6rem 1.4rem;border-radius:6px;
+  text-decoration:none;font-size:0.85rem;font-weight:600;
+  transition:all 0.2s;margin-top:1.5rem;letter-spacing:1px;
+  font-family:var(--font-body);cursor:pointer;
+}
+.verify-btn:hover{background:rgba(29,233,182,0.15);transform:translateY(-1px);}
+.empty-state{text-align:center;padding:3rem;color:var(--muted);font-size:0.9rem;}
+
+/* COUNTDOWN */
+.countdown-section{background:var(--dark3);}
+.countdown-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-top:2rem;max-width:600px;}
+.cd-item{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:1.5rem;text-align:center;}
+.cd-val{font-family:var(--font-display);font-size:2.5rem;color:var(--gold);font-weight:600;line-height:1;}
+.cd-lbl{font-size:0.7rem;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-top:6px;}
+
+/* FAQ */
+.faq-list{margin-top:2rem;display:flex;flex-direction:column;gap:12px;}
+.faq-item{background:var(--card);border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+.faq-q{
+  padding:1.2rem 1.5rem;cursor:pointer;
+  display:flex;justify-content:space-between;align-items:center;
+  font-weight:600;transition:background 0.2s;
+}
+.faq-q:hover{background:rgba(240,185,11,0.05);}
+.faq-icon{color:var(--gold);font-size:1.2rem;transition:transform 0.2s;flex-shrink:0;}
+.faq-item.open .faq-icon{transform:rotate(45deg);}
+.faq-a{display:none;padding:0 1.5rem 1.2rem;color:var(--muted);line-height:1.8;font-size:0.95rem;}
+.faq-item.open .faq-a{display:block;}
+
+/* SOCIAL */
+.social-row{display:flex;gap:1rem;flex-wrap:wrap;margin-top:1.5rem;}
+.social-btn{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:0.6rem 1.4rem;border-radius:6px;
+  font-size:0.85rem;font-weight:600;cursor:pointer;
+  transition:all 0.2s;border:none;text-decoration:none;
+  font-family:var(--font-body);letter-spacing:1px;
+}
+.social-twitter{background:#1da1f2;color:#fff;}
+.social-twitter:hover{background:#0c8de0;transform:translateY(-1px);}
+.social-telegram{background:#0088cc;color:#fff;}
+.social-telegram:hover{background:#006faa;transform:translateY(-1px);}
+
+/* FOOTER */
+footer{
+  background:var(--dark2);border-top:1px solid var(--border);
+  padding:3rem 2rem;text-align:center;
+}
+.footer-logo{font-family:var(--font-display);font-size:1.5rem;color:var(--gold);letter-spacing:3px;margin-bottom:1rem;}
+.footer-contract{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(240,185,11,0.08);border:1px solid var(--border);
+  padding:0.6rem 1.2rem;border-radius:6px;font-size:0.8rem;
+  color:var(--muted);margin:1rem 0;font-family:monospace;cursor:pointer;
+  transition:all 0.2s;
+}
+.footer-contract:hover{border-color:var(--gold);color:var(--gold);}
+.footer-note{font-size:0.8rem;color:var(--muted);margin-top:1rem;}
+.footer-note span{color:var(--teal);}
+
+/* CONFETTI */
+.confetti-container{position:fixed;inset:0;pointer-events:none;z-index:9999;}
+.confetti-piece{
+  position:absolute;width:10px;height:10px;
+  animation:confetti-fall 3s linear forwards;
+}
+@keyframes confetti-fall{
+  0%{transform:translateY(-100px) rotate(0deg);opacity:1;}
+  100%{transform:translateY(100vh) rotate(720deg);opacity:0;}
+}
+
+/* TOAST */
+.toast{
+  position:fixed;bottom:2rem;right:2rem;z-index:1000;
+  background:var(--card);border:1px solid var(--gold);
+  padding:1rem 1.5rem;border-radius:8px;font-size:0.9rem;
+  transform:translateY(100px);opacity:0;
+  transition:all 0.3s;max-width:300px;
+}
+.toast.show{transform:translateY(0);opacity:1;}
+
+/* MOSQUE SVG */
+.mosque-svg-wrap{text-align:center;margin-bottom:2rem;}
+
+@media(max-width:600px){
+  nav{padding:1rem;}
+  .nav-links{display:none;}
+  .stats-strip{grid-template-columns:1fr;}
+  .stat-item:first-child{border-radius:8px 8px 0 0;}
+  .stat-item:last-child{border-radius:0 0 8px 8px;}
+  .countdown-grid{grid-template-columns:repeat(2,1fr);}
+  .amount-grid{grid-template-columns:repeat(2,1fr);}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">
+    <svg viewBox="0 0 40 40" fill="none"><polygon points="20,4 36,13 36,27 20,36 4,27 4,13" fill="rgba(240,185,11,0.15)" stroke="#F0B90B" stroke-width="1.5"/><text x="50%" y="56%" text-anchor="middle" dominant-baseline="middle" fill="#F0B90B" font-size="11" font-weight="bold">BNB</text></svg>
+    BINANCE MOSQUE
+  </div>
+  <ul class="nav-links">
+    <li><a href="#donate">Donate</a></li>
+    <li><a href="#milestones">Milestones</a></li>
+    <li><a href="#ledger">On-Chain</a></li>
+    <li><a href="#faq">FAQ</a></li>
+  </ul>
+  <div class="nav-right">
+    <div class="wallet-info" id="walletInfo">
+      <span class="wallet-dot"></span>
+      <span id="walletAddr">0x0000</span>
+    </div>
+    <button class="btn-connect" id="btnConnect" onclick="connectWallet()">Connect Wallet</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+
+  <!-- Mosque SVG Illustration -->
+  <svg class="mosque-illustration" viewBox="0 0 600 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- Sky glow -->
+    <ellipse cx="300" cy="310" rx="260" ry="40" fill="rgba(240,185,11,0.08)"/>
+    <!-- Main building -->
+    <rect x="140" y="180" width="320" height="130" fill="#1a1a2e" stroke="rgba(240,185,11,0.4)" stroke-width="1"/>
+    <!-- Arched windows -->
+    <rect x="160" y="210" width="30" height="50" rx="15" fill="rgba(240,185,11,0.15)" stroke="rgba(240,185,11,0.5)" stroke-width="1"/>
+    <rect x="210" y="210" width="30" height="50" rx="15" fill="rgba(240,185,11,0.15)" stroke="rgba(240,185,11,0.5)" stroke-width="1"/>
+    <rect x="360" y="210" width="30" height="50" rx="15" fill="rgba(240,185,11,0.15)" stroke="rgba(240,185,11,0.5)" stroke-width="1"/>
+    <rect x="410" y="210" width="30" height="50" rx="15" fill="rgba(240,185,11,0.15)" stroke="rgba(240,185,11,0.5)" stroke-width="1"/>
+    <!-- Main door -->
+    <rect x="265" y="220" width="70" height="90" rx="35" fill="rgba(240,185,11,0.1)" stroke="#F0B90B" stroke-width="1.5"/>
+    <!-- Main dome -->
+    <ellipse cx="300" cy="180" rx="80" ry="20" fill="#1a1a2e" stroke="rgba(240,185,11,0.3)" stroke-width="1"/>
+    <path d="M220 180 Q230 100 300 90 Q370 100 380 180 Z" fill="#0d1b3e" stroke="#F0B90B" stroke-width="1.5"/>
+    <!-- Dome teal -->
+    <path d="M230 175 Q238 105 300 96 Q362 105 370 175 Z" fill="rgba(29,233,182,0.15)" stroke="rgba(29,233,182,0.5)" stroke-width="1"/>
+    <!-- Dome pattern lines -->
+    <path d="M265 175 Q268 115 300 100" stroke="rgba(240,185,11,0.2)" stroke-width="0.5"/>
+    <path d="M335 175 Q332 115 300 100" stroke="rgba(240,185,11,0.2)" stroke-width="0.5"/>
+    <!-- Crescent -->
+    <circle cx="300" cy="86" r="8" fill="none" stroke="#F0B90B" stroke-width="1.5"/>
+    <circle cx="303" cy="86" r="5.5" fill="#0a0a0f"/>
+    <line x1="300" y1="78" x2="300" y2="68" stroke="#F0B90B" stroke-width="1.5"/>
+    <!-- Small side domes -->
+    <path d="M155 190 Q158 165 175 160 Q192 165 195 190 Z" fill="rgba(29,233,182,0.12)" stroke="rgba(29,233,182,0.4)" stroke-width="1"/>
+    <path d="M405 190 Q408 165 425 160 Q442 165 445 190 Z" fill="rgba(29,233,182,0.12)" stroke="rgba(29,233,182,0.4)" stroke-width="1"/>
+    <!-- Left minaret -->
+    <rect x="88" y="90" width="22" height="180" fill="#161626" stroke="rgba(240,185,11,0.4)" stroke-width="1"/>
+    <polygon points="88,90 110,90 99,55" fill="#F0B90B" opacity="0.8"/>
+    <rect x="85" y="160" width="28" height="8" rx="2" fill="rgba(240,185,11,0.3)"/>
+    <rect x="85" y="200" width="28" height="8" rx="2" fill="rgba(240,185,11,0.3)"/>
+    <line x1="99" y1="55" x2="99" y2="45" stroke="#F0B90B" stroke-width="1.5"/>
+    <!-- Right minaret -->
+    <rect x="490" y="90" width="22" height="180" fill="#161626" stroke="rgba(240,185,11,0.4)" stroke-width="1"/>
+    <polygon points="490,90 512,90 501,55" fill="#F0B90B" opacity="0.8"/>
+    <rect x="487" y="160" width="28" height="8" rx="2" fill="rgba(240,185,11,0.3)"/>
+    <rect x="487" y="200" width="28" height="8" rx="2" fill="rgba(240,185,11,0.3)"/>
+    <line x1="501" y1="55" x2="501" y2="45" stroke="#F0B90B" stroke-width="1.5"/>
+    <!-- Ground -->
+    <rect x="50" y="308" width="500" height="4" rx="2" fill="rgba(240,185,11,0.2)"/>
+    <!-- Path -->
+    <path d="M270 308 L330 308 L320 265 L280 265 Z" fill="rgba(240,185,11,0.08)"/>
+    <!-- Stars -->
+    <circle cx="60" cy="40" r="1.5" fill="#F0B90B" opacity="0.8"/>
+    <circle cx="130" cy="25" r="1" fill="#fff" opacity="0.6"/>
+    <circle cx="200" cy="35" r="1.5" fill="#F0B90B" opacity="0.5"/>
+    <circle cx="400" cy="20" r="1" fill="#fff" opacity="0.7"/>
+    <circle cx="470" cy="38" r="1.5" fill="#F0B90B" opacity="0.6"/>
+    <circle cx="540" cy="28" r="1" fill="#fff" opacity="0.5"/>
+    <!-- Name on building -->
+    <text x="300" y="252" text-anchor="middle" fill="#F0B90B" font-size="11" font-weight="bold" letter-spacing="3" opacity="0.9">BINANCE MOSQUE</text>
+  </svg>
+
+  <div class="hero-badge">🕌 BNB Chain · Fully On-Chain · Transparent</div>
+  <h1>BINANCE MOSQUE</h1>
+  <h2>A Sacred Space Powered by Blockchain</h2>
+  <p>Fund the construction of a landmark mosque in Semarang, Central Java. Every donation is permanently recorded on BNB Chain — fully transparent, zero hidden fees.</p>
+  <div class="hero-btns">
+    <button class="btn-primary" onclick="document.getElementById('donate').scrollIntoView({behavior:'smooth'})">Donate Now 🕌</button>
+    <a class="btn-outline" href="https://bscscan.com/address/0xD61C022523AD0dd4924234144C572c5e16e68620" target="_blank">View on BSCScan ↗</a>
+  </div>
+
+  <div class="stats-strip">
+    <div class="stat-item">
+      <div class="stat-val" id="statRaised">0 BNB</div>
+      <div class="stat-lbl">Total Raised</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-val" id="statDonors">0</div>
+      <div class="stat-lbl">Donors</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-val" id="statProgress">0%</div>
+      <div class="stat-lbl">Goal Progress</div>
+    </div>
+  </div>
+</section>
+
+<!-- DONATE -->
+<section id="donate">
+  <div class="container">
+    <div class="section-label">Step 1 — Connect & Donate</div>
+    <h2 class="section-title">Make Your Donation</h2>
+    <div class="divider"></div>
+    <div class="donate-grid">
+      <!-- LEFT: Progress + Donate -->
+      <div class="donate-card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">
+          <span style="font-size:0.85rem;color:var(--muted);">Funding Progress</span>
+          <span style="font-size:0.85rem;color:var(--gold);" id="progressPct">0%</span>
+        </div>
+        <div class="progress-wrap">
+          <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:0.8rem;color:var(--muted);margin-bottom:1.5rem;">
+          <span>Raised: <span id="raisedBnb" style="color:var(--gold);">0 BNB</span></span>
+          <span>Goal: <span style="color:var(--text);" id="goalBnb">10,000 BNB</span></span>
+        </div>
+
+        <div class="section-label" style="margin-bottom:0.75rem;">Quick Amount</div>
+        <div class="amount-grid">
+          <button class="amount-btn" onclick="setAmount(0.01)">0.01</button>
+          <button class="amount-btn" onclick="setAmount(0.05)">0.05</button>
+          <button class="amount-btn" onclick="setAmount(0.1)">0.1</button>
+          <button class="amount-btn" onclick="setAmount(0.5)">0.5</button>
+        </div>
+
+        <div class="input-group">
+          <label>DONATION AMOUNT (BNB)</label>
+          <div class="input-row">
+            <input type="number" id="donateAmount" placeholder="0.001" min="0.001" step="0.001" value="0.01"/>
+            <div class="input-badge">BNB</div>
+          </div>
+        </div>
+
+        <button class="btn-donate" id="btnDonate" onclick="donate()">🕌 Donate Now</button>
+
+        <div class="tx-result" id="txResult">
+          <div style="color:var(--teal);font-weight:700;margin-bottom:6px;">✅ Donation Successful!</div>
+          <div>TX Hash: <a id="txLink" href="#" target="_blank">View on BSCScan</a></div>
+        </div>
+      </div>
+
+      <!-- RIGHT: Info -->
+      <div class="donate-card">
+        <div class="section-label" style="margin-bottom:1rem;">Why Donate On-Chain?</div>
+        <div style="display:flex;flex-direction:column;gap:1rem;">
+          <div style="display:flex;gap:12px;align-items:flex-start;">
+            <div style="width:36px;height:36px;background:rgba(240,185,11,0.1);border:1px solid var(--border);border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1rem;">🔍</div>
+            <div><div style="font-weight:600;margin-bottom:3px;">100% Transparent</div><div style="font-size:0.85rem;color:var(--muted);">Every donation & withdrawal recorded permanently on BNB Chain.</div></div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:flex-start;">
+            <div style="width:36px;height:36px;background:rgba(240,185,11,0.1);border:1px solid var(--border);border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1rem;">🔒</div>
+            <div><div style="font-weight:600;margin-bottom:3px;">Smart Contract Secured</div><div style="font-size:0.85rem;color:var(--muted);">Funds held in auditable smart contract, not a personal wallet.</div></div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:flex-start;">
+            <div style="width:36px;height:36px;background:rgba(240,185,11,0.1);border:1px solid var(--border);border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1rem;">🏗️</div>
+            <div><div style="font-weight:600;margin-bottom:3px;">Milestone-Based</div><div style="font-size:0.85rem;color:var(--muted);">Funds released in stages as construction milestones are reached.</div></div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:flex-start;">
+            <div style="width:36px;height:36px;background:rgba(240,185,11,0.1);border:1px solid var(--border);border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1rem;">⚡</div>
+            <div><div style="font-weight:600;margin-bottom:3px;">Low Gas Fees</div><div style="font-size:0.85rem;color:var(--muted);">BNB Chain keeps fees minimal — often less than $0.10 per tx.</div></div>
+          </div>
+        </div>
+
+        <div style="margin-top:1.5rem;padding:1rem;background:rgba(240,185,11,0.05);border:1px solid var(--border);border-radius:6px;">
+          <div style="font-size:0.75rem;color:var(--muted);margin-bottom:4px;">CONTRACT ADDRESS</div>
+          <div style="font-size:0.75rem;font-family:monospace;color:var(--gold);word-break:break-all;">0xD61C022523AD0dd4924234144C572c5e16e68620</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MILESTONES -->
+<section id="milestones" style="background:var(--dark2);">
+  <div class="container">
+    <div class="section-label">Construction Roadmap</div>
+    <h2 class="section-title">Building Milestones</h2>
+    <div class="divider"></div>
+    <p class="section-sub">Funds are released in 5 stages, ensuring accountability at every phase of mosque construction.</p>
+    <div class="milestone-list" id="milestoneList">
+      <div class="milestone-item" data-pct="15">
+        <div class="m-icon">🏗️</div>
+        <div class="m-info"><div class="m-title">Land Preparation & Foundation</div><div class="m-pct">Unlocks at 15% of goal</div></div>
+        <span class="m-status pending">Pending</span>
+      </div>
+      <div class="milestone-item" data-pct="35">
+        <div class="m-icon">🧱</div>
+        <div class="m-info"><div class="m-title">Walls & Structural Framework</div><div class="m-pct">Unlocks at 35% of goal</div></div>
+        <span class="m-status pending">Pending</span>
+      </div>
+      <div class="milestone-item" data-pct="55">
+        <div class="m-icon">🔨</div>
+        <div class="m-info"><div class="m-title">Roof & Dome Installation</div><div class="m-pct">Unlocks at 55% of goal</div></div>
+        <span class="m-status pending">Pending</span>
+      </div>
+      <div class="milestone-item" data-pct="80">
+        <div class="m-icon">🪟</div>
+        <div class="m-info"><div class="m-title">Interior & Finishing</div><div class="m-pct">Unlocks at 80% of goal</div></div>
+        <span class="m-status pending">Pending</span>
+      </div>
+      <div class="milestone-item" data-pct="100">
+        <div class="m-icon">🕌</div>
+        <div class="m-info"><div class="m-title">Full Completion & Inauguration</div><div class="m-pct">Unlocks at 100% of goal</div></div>
+        <span class="m-status pending">Pending</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LEDGER -->
+<section id="ledger" class="ledger-section">
+  <div class="container">
+    <div class="section-label">On-Chain Ledger – Fully Auditable</div>
+    <h2 class="section-title">Transaction History</h2>
+    <div class="divider"></div>
+    <p class="section-sub">Every donation and withdrawal is permanently recorded on BNB Chain. Click any transaction hash to verify on BSCScan.</p>
+
+    <div style="display:flex;gap:1rem;flex-wrap:wrap;margin:1.5rem 0;">
+      <button onclick="loadLedger()" class="verify-btn">🔄 Refresh Ledger</button>
+      <a href="https://bscscan.com/address/0xD61C022523AD0dd4924234144C572c5e16e68620" target="_blank" class="verify-btn">🔍 Verify on BSCScan ↗</a>
+    </div>
+
+    <div class="ledger-wrap">
+      <table class="ledger-table">
+        <thead>
+          <tr>
+            <th>Type</th>
+            <th>Wallet</th>
+            <th>Amount</th>
+            <th>Time</th>
+            <th>TX Hash</th>
+          </tr>
+        </thead>
+        <tbody id="ledgerBody">
+          <tr><td colspan="5" class="empty-state">Connect wallet to load transactions, or click Refresh Ledger</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- COUNTDOWN -->
+<section class="countdown-section">
+  <div class="container">
+    <div class="section-label">Target Groundbreaking</div>
+    <h2 class="section-title">Countdown to Milestone 1</h2>
+    <div class="divider"></div>
+    <p class="section-sub">Groundbreaking ceremony begins when 15% of the funding goal is reached.</p>
+    <div class="countdown-grid">
+      <div class="cd-item"><div class="cd-val" id="cdDays">--</div><div class="cd-lbl">Days</div></div>
+      <div class="cd-item"><div class="cd-val" id="cdHours">--</div><div class="cd-lbl">Hours</div></div>
+      <div class="cd-item"><div class="cd-val" id="cdMins">--</div><div class="cd-lbl">Minutes</div></div>
+      <div class="cd-item"><div class="cd-val" id="cdSecs">--</div><div class="cd-lbl">Seconds</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- SHARE -->
+<section style="background:var(--dark2);">
+  <div class="container">
+    <div class="section-label">Spread the Word</div>
+    <h2 class="section-title">Share This Project</h2>
+    <div class="divider"></div>
+    <p class="section-sub">Help us reach more donors by sharing Binance Mosque on social media.</p>
+    <div class="social-row">
+      <a class="social-btn social-twitter" href="https://twitter.com/intent/tweet?text=🕌%20I%20just%20donated%20to%20Binance%20Mosque%20-%20a%20blockchain-powered%20mosque%20construction%20project!%20100%%20on-chain%20transparency.%20Join%20me!%20%23BinanceMosque%20%23BNBChain%20%23Web3&url=https://bscscan.com/address/0xD61C022523AD0dd4924234144C572c5e16e68620" target="_blank">🐦 Share on Twitter</a>
+      <a class="social-btn social-telegram" href="https://t.me/share/url?url=https://bscscan.com/address/0xD61C022523AD0dd4924234144C572c5e16e68620&text=🕌%20Binance%20Mosque%20-%20Fund%20a%20real%20mosque%20on%20blockchain!%20100%%20transparent,%20every%20penny%20on-chain." target="_blank">✈️ Share on Telegram</a>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="container">
+    <div class="section-label">Frequently Asked Questions</div>
+    <h2 class="section-title">Got Questions?</h2>
+    <div class="divider"></div>
+    <div class="faq-list">
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)"><span>How do I know my funds are safe?</span><span class="faq-icon">+</span></div>
+        <div class="faq-a">All funds are held in a verified smart contract at <strong>0xD61C022523AD0dd4924234144C572c5e16e68620</strong> on BNB Chain. The contract code is open source and verified on BSCScan. No single person can move funds without the blockchain recording it permanently. You can verify every transaction yourself.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)"><span>What is the withdrawal process?</span><span class="faq-icon">+</span></div>
+        <div class="faq-a">Withdrawals are milestone-based. The project owner can only withdraw funds as construction milestones are reached (15%, 35%, 55%, 80%, 100%). Every withdrawal is recorded on-chain with a transaction hash visible to everyone on BSCScan.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)"><span>What wallet do I need to donate?</span><span class="faq-icon">+</span></div>
+        <div class="faq-a">You need any BNB Chain compatible wallet such as OKX Wallet, MetaMask (with BNB Chain network added), Trust Wallet, or Binance Web3 Wallet. Make sure you have BNB on BNB Smart Chain (not BEP-2) to donate. Minimum donation is 0.001 BNB.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)"><span>Can I see the mosque plans and progress?</span><span class="faq-icon">+</span></div>
+        <div class="faq-a">Yes! Construction design renders are shown on this website. Physical progress updates will be posted on our social channels. All financial transactions are permanently viewable on BSCScan — the blockchain is our public ledger.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)"><span>Is there a refund policy?</span><span class="faq-icon">+</span></div>
+        <div class="faq-a">The smart contract includes an emergency refund mechanism. If the funding goal is not reached by the campaign deadline, the owner can initiate refunds to donors. All such actions are recorded on-chain and transparent.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)"><span>Are there any fees?</span><span class="faq-icon">+</span></div>
+        <div class="faq-a">Zero hidden fees. 100% of your donation goes directly into the smart contract. The only cost is the BNB Chain gas fee (typically less than $0.10) which goes to the network validators, not to us.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">🕌 BINANCE MOSQUE</div>
+  <p style="color:var(--muted);font-size:0.9rem;max-width:500px;margin:0 auto 1rem;line-height:1.7;">A sacred space powered by blockchain technology. Built with transparency, trust, and the collective will of the community.</p>
+  <div class="footer-contract" onclick="copyContract()">
+    📋 0xD61C022523AD0dd4924234144C572c5e16e68620
+  </div>
+  <br/>
+  <a href="https://bscscan.com/address/0xD61C022523AD0dd4924234144C572c5e16e68620" target="_blank" class="verify-btn" style="display:inline-flex;">🔍 Verify Contract on BSCScan ↗</a>
+  <div class="footer-note" style="margin-top:2rem;"><span>100% on-chain</span> · zero hidden fees · Semarang, Central Java · BNB Chain (BSC)</div>
+</footer>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+<!-- CONFETTI -->
+<div class="confetti-container" id="confettiContainer"></div>
+
+<script>
+const CONTRACT_ADDRESS = '0xD61C022523AD0dd4924234144C572c5e16e68620';
+const BSCSCAN = 'https://bscscan.com';
+const RPC_URL = 'https://bsc-dataseed.binance.org/';
+const GOAL_ETH = 10000;
+
+const ABI = [
+  {"inputs":[],"name":"donate","outputs":[],"stateMutability":"payable","type":"function"},
+  {"inputs":[{"internalType":"uint256","name":"_amount","type":"uint256"},{"internalType":"address payable","name":"_to","type":"address"}],"name":"withdraw","outputs":[],"stateMutability":"nonpayable","type":"function"},
+  {"inputs":[],"name":"getProgressPercent","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},
+  {"inputs":[],"name":"totalRaised","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},
+  {"inputs":[],"name":"totalDonors","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},
+  {"inputs":[],"name":"fundingGoal","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},
+  {"inputs":[],"name":"getContractBalance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},
+  {"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"donor","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"totalRaised","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"timestamp","type":"uint256"}],"name":"DonationReceived","type":"event"},
+  {"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"timestamp","type":"uint256"}],"name":"FundsWithdrawn","type":"event"}
+];
+
+let provider, signer, contract, readContract;
+let walletConnected = false;
+
+// READ-ONLY provider
+async function getReadContract() {
+  try {
+    const p = new ethers.providers.JsonRpcProvider(RPC_URL);
+    return new ethers.Contract(CONTRACT_ADDRESS, ABI, p);
+  } catch(e) { return null; }
+}
+
+async function loadStats() {
+  try {
+    const rc = await getReadContract();
+    if (!rc) return;
+    const [raised, donors, pct, goal] = await Promise.all([
+      rc.totalRaised(),
+      rc.totalDonors(),
+      rc.getProgressPercent(),
+      rc.fundingGoal()
+    ]);
+    const raisedEth = parseFloat(ethers.utils.formatEther(raised));
+    const goalEth = parseFloat(ethers.utils.formatEther(goal));
+    const pctNum = pct.toNumber();
+
+    document.getElementById('statRaised').textContent = raisedEth.toFixed(4) + ' BNB';
+    document.getElementById('statDonors').textContent = donors.toString();
+    document.getElementById('statProgress').textContent = pctNum + '%';
+    document.getElementById('raisedBnb').textContent = raisedEth.toFixed(4) + ' BNB';
+    document.getElementById('goalBnb').textContent = goalEth.toLocaleString() + ' BNB';
+    document.getElementById('progressFill').style.width = Math.min(pctNum, 100) + '%';
+    document.getElementById('progressPct').textContent = pctNum + '%';
+
+    // Milestones
+    const items = document.querySelectorAll('.milestone-item');
+    items.forEach(item => {
+      const threshold = parseInt(item.dataset.pct);
+      const status = item.querySelector('.m-status');
+      if (pctNum >= threshold) {
+        item.classList.add('done');
+        item.querySelector('.m-icon').style.filter = 'none';
+        status.className = 'm-status done';
+        status.textContent = '✅ Reached';
+      }
+    });
+
+    if (pctNum >= 100) launchConfetti();
+  } catch(e) { console.log('Stats load error:', e); }
+}
+
+async function connectWallet() {
+  if (!window.ethereum) {
+    showToast('⚠️ No wallet found! Please install OKX Wallet or MetaMask.');
+    return;
+  }
+  try {
+    provider = new ethers.providers.Web3Provider(window.ethereum);
+    await provider.send('eth_requestAccounts', []);
+    const network = await provider.getNetwork();
+
+    // Check BNB Chain (56)
+    if (network.chainId !== 56) {
+      try {
+        await window.ethereum.request({
+          method: 'wallet_switchEthereumChain',
+          params: [{ chainId: '0x38' }]
+        });
+        provider = new ethers.providers.Web3Provider(window.ethereum);
+      } catch(e) {
+        showToast('⚠️ Please switch to BNB Smart Chain in your wallet!');
+        return;
+      }
+    }
+
+    signer = provider.getSigner();
+    contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
+    const addr = await signer.getAddress();
+
+    document.getElementById('walletAddr').textContent = addr.slice(0,6) + '...' + addr.slice(-4);
+    document.getElementById('walletInfo').style.display = 'flex';
+    document.getElementById('btnConnect').style.display = 'none';
+    walletConnected = true;
+
+    showToast('✅ Wallet connected! Ready to donate.');
+    loadStats();
+    loadLedger();
+  } catch(e) {
+    showToast('❌ Connection failed: ' + (e.message || 'User rejected'));
+  }
+}
+
+async function donate() {
+  const amountInput = document.getElementById('donateAmount').value;
+  const amount = parseFloat(amountInput);
+
+  if (!walletConnected) {
+    showToast('⚠️ Please connect your wallet first!');
+    return;
+  }
+  if (!amount || amount < 0.001) {
+    showToast('⚠️ Minimum donation is 0.001 BNB');
+    return;
+  }
+
+  const btn = document.getElementById('btnDonate');
+  btn.disabled = true;
+  btn.textContent = '⏳ Processing...';
+
+  try {
+    const value = ethers.utils.parseEther(amount.toString());
+    const tx = await contract.donate({ value });
+    btn.textContent = '⏳ Confirming...';
+    await tx.wait();
+
+    const txResult = document.getElementById('txResult');
+    const txLink = document.getElementById('txLink');
+    txLink.href = `${BSCSCAN}/tx/${tx.hash}`;
+    txLink.textContent = tx.hash.slice(0,20) + '...';
+    txResult.style.display = 'block';
+
+    showToast('🎉 Donation successful! JazakAllah Khair!');
+    loadStats();
+    loadLedger();
+  } catch(e) {
+    showToast('❌ Transaction failed: ' + (e.reason || e.message || 'Error'));
+  }
+
+  btn.disabled = false;
+  btn.textContent = '🕌 Donate Now';
+}
+
+async function loadLedger() {
+  const tbody = document.getElementById('ledgerBody');
+  tbody.innerHTML = '<tr><td colspan="5" class="empty-state">⏳ Loading transactions...</td></tr>';
+
+  try {
+    const rc = await getReadContract();
+    if (!rc) throw new Error('No provider');
+
+    const latestBlock = await rc.provider.getBlockNumber();
+    const fromBlock = Math.max(0, latestBlock - 50000);
+
+    const donationFilter = rc.filters.DonationReceived();
+    const withdrawFilter = rc.filters.FundsWithdrawn();
+
+    const [donations, withdrawals] = await Promise.all([
+      rc.queryFilter(donationFilter, fromBlock, latestBlock),
+      rc.queryFilter(withdrawFilter, fromBlock, latestBlock)
+    ]);
+
+    const events = [
+      ...donations.map(e => ({
+        type: 'in',
+        wallet: e.args.donor,
+        amount: ethers.utils.formatEther(e.args.amount),
+        time: e.args.timestamp ? new Date(e.args.timestamp.toNumber()*1000) : null,
+        hash: e.transactionHash,
+        block: e.blockNumber
+      })),
+      ...withdrawals.map(e => ({
+        type: 'out',
+        wallet: e.args.to,
+        amount: ethers.utils.formatEther(e.args.amount),
+        time: e.args.timestamp ? new Date(e.args.timestamp.toNumber()*1000) : null,
+        hash: e.transactionHash,
+        block: e.blockNumber
+      }))
+    ].sort((a,b) => b.block - a.block).slice(0, 30);
+
+    if (events.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="5" class="empty-state">No transactions found yet. Be the first to donate! 🕌</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = events.map(e => `
+      <tr>
+        <td><span class="badge-${e.type}">${e.type === 'in' ? '⬇ Donation' : '⬆ Withdrawal'}</span></td>
+        <td style="font-family:monospace;font-size:0.8rem;">${e.wallet.slice(0,6)}...${e.wallet.slice(-4)}</td>
+        <td style="color:${e.type === 'in' ? 'var(--teal)' : 'var(--gold)'};">${parseFloat(e.amount).toFixed(6)} BNB</td>
+        <td style="font-size:0.8rem;color:var(--muted);">${e.time ? e.time.toLocaleString() : 'Block #' + e.block}</td>
+        <td style="font-family:monospace;font-size:0.75rem;">
+          <a href="${BSCSCAN}/tx/${e.hash}" target="_blank">${e.hash.slice(0,14)}...</a>
+        </td>
+      </tr>
+    `).join('');
+  } catch(err) {
+    tbody.innerHTML = `<tr><td colspan="5" class="empty-state">⚠️ Could not load transactions. <a href="${BSCSCAN}/address/${CONTRACT_ADDRESS}" target="_blank" style="color:var(--teal)">View on BSCScan ↗</a></td></tr>`;
+  }
+}
+
+function setAmount(val) {
+  document.getElementById('donateAmount').value = val;
+  document.querySelectorAll('.amount-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+}
+
+function toggleFaq(el) {
+  el.parentElement.classList.toggle('open');
+}
+
+function copyContract() {
+  navigator.clipboard.writeText(CONTRACT_ADDRESS);
+  showToast('📋 Contract address copied!');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+function launchConfetti() {
+  const container = document.getElementById('confettiContainer');
+  const colors = ['#F0B90B','#1de9b6','#ffffff','#ff6b6b','#a855f7'];
+  for (let i = 0; i < 80; i++) {
+    const piece = document.createElement('div');
+    piece.className = 'confetti-piece';
+    piece.style.cssText = `
+      left:${Math.random()*100}%;
+      background:${colors[Math.floor(Math.random()*colors.length)]};
+      border-radius:${Math.random()>0.5?'50%':'2px'};
+      animation-delay:${Math.random()*2}s;
+      animation-duration:${2+Math.random()*2}s;
+      width:${6+Math.random()*8}px;
+      height:${6+Math.random()*8}px;
+    `;
+    container.appendChild(piece);
+    setTimeout(() => piece.remove(), 5000);
+  }
+}
+
+// COUNTDOWN — target: 180 days from now (campaign duration)
+function updateCountdown() {
+  const target = new Date();
+  target.setDate(target.getDate() + 180);
+  const now = new Date();
+  const diff = target - now;
+  if (diff <= 0) { ['cdDays','cdHours','cdMins','cdSecs'].forEach(id => document.getElementById(id).textContent = '00'); return; }
+  const d = Math.floor(diff/86400000);
+  const h = Math.floor((diff%86400000)/3600000);
+  const m = Math.floor((diff%3600000)/60000);
+  const s = Math.floor((diff%60000)/1000);
+  document.getElementById('cdDays').textContent = String(d).padStart(2,'0');
+  document.getElementById('cdHours').textContent = String(h).padStart(2,'0');
+  document.getElementById('cdMins').textContent = String(m).padStart(2,'0');
+  document.getElementById('cdSecs').textContent = String(s).padStart(2,'0');
+}
+
+// INIT
+loadStats();
+setInterval(updateCountdown, 1000);
+updateCountdown();
+setInterval(loadStats, 30000);
+</script>
+</body>
+</html>
